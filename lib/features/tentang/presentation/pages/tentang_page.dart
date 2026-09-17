@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TentangPage extends StatelessWidget {
   const TentangPage({super.key});
@@ -50,9 +51,19 @@ class TentangPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                Image.asset(
-                  'assets/images/logo_kpb.png',
-                  height: 72,
+                GestureDetector(
+                  onTap: () async {
+                    final Uri url =
+                        Uri.parse('https://www.instagram.com/kpbnycticoraxunj/');
+                    if (!await launchUrl(url,
+                        mode: LaunchMode.externalApplication)) {
+                      throw Exception('Could not launch $url');
+                    }
+                  },
+                  child: Image.asset(
+                    'assets/images/logo_kpb.png',
+                    height: 72,
+                  ),
                 ),
               ],
             ),
@@ -70,9 +81,18 @@ class TentangPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 8),
-                Image.asset(
-                  'assets/images/logo_scentia.png',
-                  height: 40,
+                GestureDetector(
+                  onTap: () async {
+                    final Uri url = Uri.parse('https://www.scentia-edu.com/');
+                    if (!await launchUrl(url,
+                        mode: LaunchMode.externalApplication)) {
+                      throw Exception('Could not launch $url');
+                    }
+                  },
+                  child: Image.asset(
+                    'assets/images/logo_scentia.png',
+                    height: 40,
+                  ),
                 ),
               ],
             ),
