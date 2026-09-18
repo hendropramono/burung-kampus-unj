@@ -37,8 +37,8 @@ class _LoginPageState extends State<LoginPage> {
     _clearError();
 
     try {
-      final user = await _authService.signInWithGoogle();
-      if (user != null && mounted) {
+      final result = await _authService.signInWithGoogle();
+      if (result != null && mounted) {
         // Transition to password setup after successful Google Login
         setState(() {
           _isSettingPassword = true;
@@ -46,9 +46,12 @@ class _LoginPageState extends State<LoginPage> {
         });
       } else {
         _toggleLoading(false);
+        if (mounted && result == null) {
+          _setError('Login gagal. Pastikan email dukungan di Firebase sudah diatur.');
+        }
       }
     } catch (e) {
-      _setError('Gagal masuk dengan Google. Silakan coba lagi.');
+      _setError('Error: $e');
       _toggleLoading(false);
     }
   }

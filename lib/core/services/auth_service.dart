@@ -30,23 +30,36 @@ class AuthService {
   /// Returns [UserCredential] on success, or null if canceled/failed.
   Future<UserCredential?> signInWithGoogle() async {
     try {
+      debugPrint('AuthService: Starting Google Sign In...');
+      
       // 1. Trigger the Google Authentication flow
       // Using authenticate() for compatibility with the latest Google Identity Services (v7+)
       final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate();
-      if (googleUser == null) return null;
+      
+      if (googleUser == null) {
+        debugPrint('AuthService: Google Sign In canceled by user.');
+        return null;
+      }
 
+      debugPrint('AuthService: Authenticated. Fetching tokens...');
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      if (googleAuth.idToken == null) {
+        debugPrint('AuthService Error: idToken is null. Check Firebase Support Email.');
+        return null;
+      }
 
       // 2. Create a credential for Firebase
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
-        // Note: accessToken is omitted for compatibility with GIS v7.x auth flow
       );
 
+      debugPrint('AuthService: Signing in to Firebase...');
       // 3. Sign in to Firebase and return the result
       final UserCredential result = await _auth.signInWithCredential(credential);
       
       if (result.user != null) {
+        debugPrint('AuthService: Firebase Sign In successful. Syncing metadata...');
         await _syncUserMetadata(result.user!);
       }
 
